@@ -1,35 +1,52 @@
 const indexCtrl = {};
+const color = require('colors/safe');
 
 const idModel = require('../models/idModel');
 
 indexCtrl.renderIndex = async (req, res) => {
     // Renderizando IDs
-    console.log('consultando a DB');
+    console.log(color.blue(req.body.id));
     const ids = await idModel.find();
-    console.log('ids');
-    console.log(ids);
     res.render('index', { ids });
 };
+// Validation ID
+indexCtrl.validation = async (req, res, next) => {
+    const idFind = await idModel.findOne({ id: req.body.id });
+    console.log(color.green(req.body.id));
+    if (idFind) {
+        console.log(color.red('error igual'));
+        req.flash("error_msg", "Introduce otro numero");
+        res.redirect('/');
+    } else if (!(req.body.id)) {
+        console.log(color.red('error nada'));
+        req.flash("error_msg", "Introduce un numero");
+        res.redirect('/');
+    } else {
+        next();
+    };
+};
 
-// Guardar ID
+
+// Save ID
 indexCtrl.newId = async (req, res) => {
-    const errors = [];
+    let success = {};
     const { id } = req.body;
-    console.log('ID-----------');
-    console.log(req.body);
     const newId = new idModel({
         id
     });
-    if (id == null) {
-        errors.push({ text: 'por favor introduce un numero' });
-        console.log('error introduce numero');
-    };
     await newId.save();
-    console.log('ID creado');
-    console.log(newId);
-    req.flash("success-msg", "ID creado correctamente");
+    req.flash("success_msg", "ID creado");
     res.redirect('/');
 };
+
+// Delete
+indexCtrl.deleteId = async (req, res) => {
+    console.log(color.yellow(req.body._id));
+    await idModel.findByIdAndDelete(req.params.id);
+    req.flash('success_msg', 'Note Delete Succefully');
+    res.redirect('/')
+};
+
 
 
 module.exports = indexCtrl;

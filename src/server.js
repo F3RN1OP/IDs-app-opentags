@@ -1,8 +1,9 @@
 const express = require('express');
 const path = require('path');
 const exphbs = require('express-handlebars');
-const expsession = require('express-session');
+const session = require('express-session');
 const flash = require('connect-flash');
+const methodOverride = require('method-override');
 
 // Initializations
 const app = express();
@@ -20,17 +21,19 @@ app.set('view engine', '.hbs');
 
 //Middlewares
 app.use(express.urlencoded({ extended: true }));
-app.use(expsession({
+app.use(methodOverride('_method'));
+app.use(session({
     secret: 'secret',
     resave: true,
     saveUninitialized: true
 }));
 app.use(flash());
 
+
 // Global Variables
-app.use((req, res, next) => {
-    res.locals.succes_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error');
+app.use((req, res, next)=>{
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
     next();
 });
 
