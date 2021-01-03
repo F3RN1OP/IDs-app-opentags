@@ -5,21 +5,17 @@ const idModel = require('../models/idModel');
 
 indexCtrl.renderIndex = async (req, res) => {
     // Renderizando IDs
-    console.log(color.blue(req.body.id));
     const ids = await idModel.find();
     res.render('index', { ids });
 };
 // Validation ID
 indexCtrl.validation = async (req, res, next) => {
     const idFind = await idModel.findOne({ id: req.body.id });
-    console.log(color.green(req.body.id));
     if (idFind) {
-        console.log(color.red('error igual'));
-        req.flash("error_msg", "Introduce otro numero");
+        req.flash("error_msg", "Write another number");
         res.redirect('/');
     } else if (!(req.body.id)) {
-        console.log(color.red('error nada'));
-        req.flash("error_msg", "Introduce un numero");
+        req.flash("error_msg", "Write a number");
         res.redirect('/');
     } else {
         next();
@@ -41,7 +37,6 @@ indexCtrl.newId = async (req, res) => {
 
 // Delete
 indexCtrl.deleteId = async (req, res) => {
-    console.log(color.yellow(req.body._id));
     await idModel.findByIdAndDelete(req.params.id);
     req.flash('success_msg', 'Note Delete Succefully');
     res.redirect('/')
