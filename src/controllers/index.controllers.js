@@ -31,14 +31,14 @@ indexCtrl.newId = async (req, res) => {
         id
     });
     await newId.save();
-    req.flash("success_msg", "ID creado");
+    req.flash("success_msg", "ID created");
     res.redirect('/');
 };
 
 // Delete
 indexCtrl.deleteId = async (req, res) => {
     await idModel.findByIdAndDelete(req.params.id);
-    req.flash('success_msg', 'Note Delete Succefully');
+    req.flash('success_msg', 'ID delete succefully');
     res.redirect('/')
 };
 
